@@ -4,7 +4,7 @@ import plotly.express as px
 import numpy as np
 
 # ページ設定（必ず最初に実行）
-st.set_page_config(layout="wide", page_title="工数分析ビューア")
+st.set_page_config(layout="wide", page_title="Effort Analysis Viewer")
 
 # 定数定義
 BLANK_STR = "[空白]"
@@ -16,10 +16,10 @@ UNIT_COL = "UNIT"
 EFFORT_COL = "作業時間(h)"
 
 # アプリケーションタイトル
-st.title("工数分析ビューア")
+st.title("Effort Analysis Viewer")
 
 # 使い方説明
-with st.expander("📋 使い方"):
+with st.expander("使い方"):
     st.markdown("""
     ### 使い方
     1. Excel形式の工数データをアップロードしてください
@@ -117,7 +117,6 @@ for col in available_base_columns:
 # --- 「UNIT」フィルター（常に最後）---
 unit_filter_selected = []
 if unit_col_exists_in_source:
-    st.sidebar.markdown("---")
     unit_options = df_source[UNIT_COL].fillna(BLANK_STR).unique().tolist()
     try:
         unit_options.sort(key=lambda x: str(x))
@@ -335,4 +334,4 @@ else:
     else:
         st.info("フィルター条件に一致するデータがありません。")
 
-st.caption("分析完了")
+st.markdown("---"); st.caption("Effort Analysis Viewer")
