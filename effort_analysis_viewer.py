@@ -6,6 +6,13 @@ import numpy as np
 import argparse
 import sys
 
+# --- 仕様に基づく変更点 (Stream Cloud対応) ---
+# 1. ローカルファイル関連機能の調整
+# 2. 例外処理と表示の強化
+# 3. ファイルアップロードUIの改善
+# 4. CUI実行時のヘルプ表示の追加
+# -----------------------------------------
+
 # --- CUIモード用のコマンドライン引数解析 ---
 def parse_arguments():
     parser = argparse.ArgumentParser(description='工数分析ビューア')
@@ -169,12 +176,7 @@ def run_streamlit_app():
     if df_source is None:
         if not load_error:
             st.info("分析するファイルをアップロードしてください。")
-            # ダミーデータ生成オプション（開発用）
-            if st.button("サンプルデータを生成", help="テスト用のダミーデータを生成します"):
-                df_source = _generate_sample_data()
-                st.success("サンプルデータが生成されました。以下で分析できます。")
-            else:
-                st.stop()
+            st.stop()
         else:
             st.stop()
 
@@ -450,45 +452,9 @@ def run_streamlit_app():
 
     st.caption("分析完了")
 
-# --- 開発用サンプルデータ生成関数 ---
-def _generate_sample_data():
-    """Stream Cloud開発用のサンプルデータ生成"""
-    import numpy as np
-    import pandas as pd
-    
-    np.random.seed(42)
-    
-    # 基本データの作成
-    n_rows = 100
-    user_fields = ["プロジェクトA", "プロジェクトB", "プロジェクトC"]
-    units = ["ユニット1", "ユニット2", "ユニット3", "指番なし"]
-    task_types = ["会議", "設計", "開発", "テスト", "ドキュメント", "レビュー"]
-    task_details = ["基本設計", "詳細設計", "コーディング", "単体テスト", "結合テスト"]
-    
-    # DataFrame作成
-    df = pd.DataFrame({
-        "年": np.random.choice(range(2022, 2026), n_rows),
-        "月": np.random.choice(range(1, 13), n_rows),
-        "従業員名": np.random.choice(["鈴木", "田中", "佐藤", "山田", "中村"], n_rows),
-        "作業時間(h)": np.random.uniform(0.5, 10.0, n_rows),
-        "USER_FIELD_01": np.random.choice(user_fields, n_rows),
-        "USER_FIELD_02": np.random.choice(["フェーズ1", "フェーズ2", "フェーズ3"], n_rows),
-        "USER_FIELD_03": np.random.choice(["高", "中", "低"], n_rows),
-        "UNIT": np.random.choice(units, n_rows),
-        "業務内容": [f"{np.random.choice(task_types)}_{np.random.choice(task_details)}" for _ in range(n_rows)]
-    })
-    
-    # 業務内容の分割
-    for i in range(1, 6):
-        df[f"業務内容{i}"] = ""
-    
-    # サンプルデータなので業務内容1, 2に分割
-    for idx, row in df.iterrows():
-        parts = row["業務内容"].split("_")
-        df.at[idx, "業務内容1"] = parts[0] if len(parts) > 0 else ""
-        df.at[idx, "業務内容2"] = parts[1] if len(parts) > 1 else ""
-    
-    return df
+# エントリーポイント
+if __name__ == "__main__":
+    main()
 
 # エントリーポイント
 if __name__ == "__main__":
