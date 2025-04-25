@@ -6,6 +6,11 @@ import numpy as np
 import argparse
 import sys
 
+# --- Streamlit ページ設定 (必ず最初に実行) ---
+# Streamlitのコードが実行されるとき用のページ設定
+if 'streamlit' in sys.modules and hasattr(st, 'session_state'):
+    st.set_page_config(layout="wide", page_title="工数分析ビューア")
+
 # --- 仕様に基づく変更点 (Stream Cloud対応) ---
 # 1. ローカルファイル関連機能の調整
 # 2. 例外処理と表示の強化
@@ -117,8 +122,7 @@ def load_data(source):
 
 # --- Streamlitアプリケーション本体 ---
 def run_streamlit_app():
-    # --- Streamlit ページ設定 ---
-    st.set_page_config(layout="wide", page_title="工数分析ビューア")
+    # --- Streamlit ページタイトル ---
     st.title("工数分析ビューア")
     
     with st.expander("📋 使い方"):
@@ -232,6 +236,7 @@ def run_streamlit_app():
     # --- 「UNIT」フィルター（常に最後）---
     unit_filter_selected = []
     if unit_col_exists_in_source:
+        st.sidebar.markdown("---")
         unit_options = df_source[UNIT_COL].fillna(BLANK_STR).unique().tolist()
         try:
             unit_options.sort(key=lambda x: str(x))
